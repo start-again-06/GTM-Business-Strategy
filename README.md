@@ -112,7 +112,7 @@ $$
 
 The policy $\pi$ seeks to maximize the expected discounted return:
 
-```latex
+$$
 J(\pi)
 =
 \mathbb{E}_{\pi}
@@ -120,7 +120,12 @@ J(\pi)
 \sum_{t=0}^{T-1}
 \gamma^t r_t
 \right]
-```
+$$
+
+where:
+- $\gamma \in [0, 1)$ is the discount factor
+- $r_t$ is the reward at time step $t$
+- $T$ is the horizon length
 
 ---
 
