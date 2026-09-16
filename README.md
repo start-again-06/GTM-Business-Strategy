@@ -116,10 +116,6 @@ $$
 J(\pi)
 =
 \mathbb{E}_{\pi}
-\left[
-\sum_{t=0}^{T-1}
-\gamma^t r_t
-\right]
 $$
 
 where:
