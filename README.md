@@ -602,7 +602,7 @@ flowchart LR
     C --> E
 
     D --> F
-    F --> G1
+    F --> G
 
     G --> A
 ```
@@ -619,34 +619,10 @@ PPO constrains policy updates to avoid excessively large changes between success
 
 The clipped PPO objective can be written as:
 
-\[
+$$
 L^{\mathrm{CLIP}}(\theta)
 =
-\hat{\mathbb{E}}_{t}
-\left[
-\min\left(
-r_t(\theta)\hat{A}_t,\;
-\operatorname{clip}\!\left(r_t(\theta),\,1-\epsilon,\,1+\epsilon\right)\hat{A}_t
-\right)
-\right]
-\]
-
-where the probability ratio is:
-
-\[
-r_t(\theta)
-=
-\frac{
-\pi_\theta(a_t \mid s_t)
-}{
-\pi_{\theta_{\mathrm{old}}}(a_t \mid s_t)
-}
-\]
-
-\[
-L^{\mathrm{CLIP}}(\theta)
-=
-\hat{\mathbb{E}}_t
+\mathbb{E}_t
 \left[
 \min
 \left(
@@ -660,7 +636,19 @@ r_t(\theta),
 \hat{A}_t
 \right)
 \right]
-\]
+$$
+
+where the probability ratio is:
+
+$$
+r_t(\theta)
+=
+\frac{
+\pi_\theta(a_t \mid s_t)
+}{
+\pi_{\theta_{\mathrm{old}}}(a_t \mid s_t)
+}
+$$
 
 and:
 
