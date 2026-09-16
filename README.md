@@ -112,6 +112,7 @@ $$
 
 The policy $\pi$ seeks to maximize the expected discounted return:
 
+$$
 J(\pi)
 =
 \mathbb{E}_{\pi}
@@ -119,6 +120,7 @@ J(\pi)
 \sum_{t=0}^{T-1}
 \gamma^t r_t
 \right]
+$$
 
 ---
 
