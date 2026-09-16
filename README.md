@@ -110,19 +110,6 @@ $$
 r_t = R\left(s_t, a_t, s_{t+1}\right)
 $$
 
-The policy $\pi$ seeks to maximize the expected discounted return:
-
-$$
-J(\pi)
-=
-\mathbb{E}_{\pi}
-$$
-
-where:
-- $\gamma \in [0, 1)$ is the discount factor
-- $r_t$ is the reward at time step $t$
-- $T$ is the horizon length
-
 ---
 
 ## Environment Architecture
@@ -546,34 +533,6 @@ Relevant components include:
 - Brand health
 - Marketing efficiency
 
-A generalized reward formulation can be expressed as:
-
-$$
-R_t =
-\alpha R_{\mathrm{revenue}}
-+
-\beta R_{\mathrm{growth}}
-+
-\gamma R_{\mathrm{brand}}
--
-\delta C_{\mathrm{inefficiency}}
-$$
-
-where:
-
-| Component | Description |
-|---|---|
-| $R_{\mathrm{revenue}}$ | Revenue contribution |
-| $R_{\mathrm{growth}}$ | Customer and funnel growth contribution |
-| $R_{\mathrm{brand}}$ | Brand-health contribution |
-| $C_{\mathrm{inefficiency}}$ | Cost associated with inefficient decisions |
-| $\alpha$ | Revenue weighting coefficient |
-| $\beta$ | Growth weighting coefficient |
-| $\gamma$ | Brand weighting coefficient |
-| $\delta$ | Inefficiency penalty coefficient |
-
-The exact implementation of the reward is defined by the environment.
-
 ---
 
 ## Reinforcement Learning
@@ -611,54 +570,6 @@ flowchart LR
 The **actor** learns the GTM decision policy.
 
 The **critic** estimates the value of the current environment state.
-
----
-
-## PPO Objective
-
-PPO constrains policy updates to avoid excessively large changes between successive policies.
-
-The clipped PPO objective can be written as:
-
-$$
-L^{\mathrm{CLIP}}(\theta)
-=
-\mathbb{E}_t
-\left[
-\min
-\left(
-r_t(\theta)\hat{A}_t,
-\operatorname{clip}
-\left(
-r_t(\theta),
-1-\epsilon,
-1+\epsilon
-\right)
-\hat{A}_t
-\right)
-\right]
-$$
-
-where the probability ratio is:
-
-$$
-r_t(\theta)
-=
-\frac{
-\pi_\theta(a_t \mid s_t)
-}{
-\pi_{\theta_{\mathrm{old}}}(a_t \mid s_t)
-}
-$$
-
-and:
-
-- $\pi_\theta$ is the current policy
-- $\pi_{\theta_{\mathrm{old}}}$ is the previous policy
-- $\hat{A}_t$ is the estimated advantage
-- $\epsilon$ is the clipping parameter
-
-This formulation limits excessively large policy updates during training.
 
 ---
 
