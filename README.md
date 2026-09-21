@@ -37,7 +37,7 @@ The repository also includes an interactive Hugging Face Space with a dashboard 
 
 Go-To-Market strategy involves a continuous sequence of interconnected decisions.
 
-A strategy that performs well in one week may become less effective as:
+A strategy that performs well in one week may become ineffective as:
 
 - Marketing channels saturate
 - Customer behavior changes
@@ -46,7 +46,7 @@ A strategy that performs well in one week may become less effective as:
 - Brand effects accumulate
 - Pricing changes influence demand
 
-Instead of treating GTM as a one-time optimization problem, this environment models it as a **closed-loop sequential decision-making process**.
+Instead of treating GTM as a one-time optimization problem, this environment models it as a **closed-loop decision-making process**.
 
 ```mermaid
 flowchart LR
@@ -73,15 +73,16 @@ The agent repeatedly observes the environment, evaluates the resulting market re
 The GTM environment can be formulated as a sequential decision-making process:
 
 $$
-\mathcal{E} = (\mathcal{S}, \mathcal{A}, P, R, \gamma)
+\mathcal{E} =
+(\mathcal{S}, \mathcal{A}, P, R, \gamma)
 $$
 
 where:
 
 | Symbol | Description |
 |---|---|
-| $\mathcal{S}$ | GTM environment state space |
-| $\mathcal{A}$ | Available GTM action space |
+| $\mathcal{S}$ | GTM environment state |
+| $\mathcal{A}$ | Available GTM actions |
 | $P$ | Environment transition dynamics |
 | $R$ | Reward function |
 | $\gamma$ | Discount factor |
@@ -98,16 +99,28 @@ $$
 a_t \in \mathcal{A}
 $$
 
-The environment then transitions to the next state according to:
+The environment transitions according to:
 
 $$
-s_{t+1} \sim P\left(s_{t+1} \mid s_t, a_t\right)
+s_{t+1} \sim P(s_{t+1}|s_t,a_t)
 $$
 
-The corresponding reward is:
+and produces a reward:
 
 $$
-r_t = R\left(s_t, a_t, s_{t+1}\right)
+r_t = R(s_t,a_t,s_{t+1})
+$$
+
+The policy $\pi$ seeks to maximize the expected discounted return:
+
+$$
+J(\pi)
+=
+\mathbb{E}_{\pi}
+\left[
+\sum_{t=0}^{T}
+\gamma^t r_t
+\right]
 $$
 
 ---
@@ -184,7 +197,7 @@ At every timestep, the agent selects a GTM strategy consisting of multiple coord
 
 The agent distributes the available weekly budget across marketing channels.
 
-The allocation constraint is:
+The allocation follows:
 
 $$
 \sum_{c=1}^{C} b_c \leq 1
@@ -202,11 +215,11 @@ $$
 \sum_{s=1}^{S} w_s \approx 1
 $$
 
-where $w_s$ represents the targeting weight assigned to customer segment $s$.
+where $w_s$ represents the targeting weight assigned to segment $s$.
 
 ### Messaging
 
-The agent selects a weighted messaging strategy across different messaging dimensions.
+The agent selects a weighted messaging strategy.
 
 The messaging distribution approximately satisfies:
 
@@ -321,7 +334,7 @@ sequenceDiagram
 
 ## Environment Dynamics
 
-The environment incorporates several dynamics designed to represent uncertainty and feedback loops present in real-world GTM strategy.
+The environment incorporates several dynamics designed to represent the uncertainty and feedback loops present in real-world GTM strategy.
 
 ### Diminishing Returns
 
@@ -330,21 +343,23 @@ Marketing channels exhibit diminishing returns as cumulative spending increases.
 A simplified representation is:
 
 $$
-E_c(S_c) = E_{c,0} f(S_c)
+E_c(S_c)
+=
+E_{c,0}f(S_c)
 $$
 
 where:
 
-- $E_c(S_c)$ is the effectiveness of channel $c$ after cumulative spend $S_c$
-- $E_{c,0}$ is the baseline effectiveness of channel $c$
-- $S_c$ is cumulative spend on channel $c$
-- $f(\cdot)$ is a diminishing-return function
+- $E_c$ is channel effectiveness
+- $S_c$ is cumulative channel spend
+- $E_{c,0}$ is baseline effectiveness
+- $f(\cdot)$ represents the diminishing-return function
 
 This prevents an agent from continuously concentrating its entire budget on a single channel.
 
 ### Brand Evolution
 
-Brand health evolves over time based on messaging consistency and brand investment.
+Brand health evolves over time based on messaging consistency and investment.
 
 ```mermaid
 flowchart LR
@@ -370,17 +385,15 @@ Brand effects are delayed and may influence future customer behavior rather than
 
 The environment introduces stochasticity into observed performance metrics.
 
-An observed metric can be represented as:
+Observed metrics can be represented as:
 
 $$
-\tilde{x} = x + \epsilon
+\tilde{x}
+=
+x + \epsilon
 $$
 
-where:
-
-- $x$ is the underlying metric
-- $\tilde{x}$ is the observed metric
-- $\epsilon$ represents observation noise
+where $\epsilon$ represents observation noise.
 
 The magnitude of noise increases with environment difficulty.
 
@@ -464,7 +477,7 @@ flowchart LR
 
 The `channel_optimizer` task focuses on fundamental GTM allocation decisions.
 
-Primary components include:
+Primary components:
 
 - Marketing budget allocation
 - Channel selection
@@ -522,7 +535,7 @@ weeks.
 
 ## Reward Function
 
-The environment evaluates GTM decisions using multiple business-performance signals.
+The environment evaluates GTM decisions using business-performance signals.
 
 Relevant components include:
 
@@ -532,6 +545,30 @@ Relevant components include:
 - Retention
 - Brand health
 - Marketing efficiency
+
+A generalized reward formulation can be expressed as:
+
+$$
+R_t =
+\alpha R_{\mathrm{revenue}}
++
+\beta R_{\mathrm{growth}}
++
+\gamma R_{\mathrm{brand}}
+-
+\delta C_{\mathrm{inefficiency}}
+$$
+
+where:
+
+| Component | Description |
+|---|---|
+| $R_{\mathrm{revenue}}$ | Revenue contribution |
+| $R_{\mathrm{growth}}$ | Customer and funnel growth |
+| $R_{\mathrm{brand}}$ | Brand-health contribution |
+| $C_{\mathrm{inefficiency}}$ | Cost associated with inefficient decisions |
+
+The exact implementation of the reward is defined by the environment.
 
 ---
 
@@ -1235,7 +1272,7 @@ $$
 }
 $$
 
-At each timestep, the agent receives new information about the market and updates its strategy accordingly.
+At each timestep, the agent receives new information about the market and must update its strategy accordingly.
 
 ---
 
